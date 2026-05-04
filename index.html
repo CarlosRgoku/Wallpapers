@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carlos Walls — Acervo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06080b;
+    --surface: #0c0f14;
+    --surface2: #12171f;
+    --border: #1a2030;
+    --gold: #c9a84c;
+    --gold2: #e8d5a0;
+    --red: #c0392b;
+    --text: #cdd5e0;
+    --muted: #4a5568;
+    --white: #f0f4f8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s;
+    mix-blend-mode: difference;
+  }
+
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.15s ease, width 0.3s, height 0.3s;
+  }
+
+  body:has(a:hover) .cursor-ring,
+  body:has(button:hover) .cursor-ring {
+    width: 56px; height: 56px;
+    border-color: var(--gold);
+  }
+
+  /* Grain */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.35;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 20%, rgba(201,168,76,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(192,57,43,0.04) 0%, transparent 50%);
+  }
+
+  .hero-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  nav {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 48px;
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 1px;
+  }
+
+  .nav-logo span {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 48px;
+  }
+
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-eyebrow-line {
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .hero-eyebrow span {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(72px, 12vw, 180px);
+    font-weight: 900;
+    line-height: 0.85;
+    color: var(--white);
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--gold);
+    display: block;
+  }
+
+  .hero-title .small {
+    font-size: clamp(32px, 5vw, 72px);
+    color: var(--muted);
+    font-weight: 400;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .hero-desc {
+    max-width: 400px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--muted);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+
+  .hero-bottom {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 32px 48px;
+  }
+
+  .hero-scroll {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+
+  .scroll-line {
+    width: 40px;
+    height: 1px;
+    background: var(--muted);
+    animation: scrollPulse 2s infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { width: 40px; opacity: 0.5; }
+    50% { width: 60px; opacity: 1; }
+  }
+
+  .hero-counter {
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--border);
+    line-height: 1;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 0 48px;
+    margin: 80px 0 64px;
+  }
+
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+
+  .divider-text {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .divider-diamond {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* ─── GALLERY ─── */
+  .gallery-section {
+    padding: 0 48px 120px;
+  }
+
+  .gallery-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 48px;
+  }
+
+  .gallery-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .gallery-title span { color: var(--gold); font-style: italic; }
+
+  .gallery-filter {
+    display: flex;
+    gap: 8px;
+  }
+
+  .filter-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 8px 18px;
+    border-radius: 2px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: none;
+    transition: all 0.3s;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #000;
+  }
+
+  /* Masonry grid */
+  .gallery-grid {
+    columns: 3;
+    column-gap: 16px;
+  }
+
+  .gallery-item {
+    break-inside: avoid;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    background: var(--surface);
+    cursor: none;
+  }
+
+  .gallery-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    z-index: 1;
+  }
+
+  .gallery-item:hover::before { opacity: 1; }
+
+  .gallery-item img {
+    width: 100%;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    filter: saturate(0.8);
+  }
+
+  .gallery-item:hover img {
+    transform: scale(1.06);
+    filter: saturate(1);
+  }
+
+  .item-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s;
+  }
+
+  .gallery-item:hover .item-info {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .item-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .item-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .item-btn {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+    padding: 6px 14px;
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: none;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .item-btn:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #000;
+  }
+
+  /* Tall item */
+  .gallery-item.tall img { aspect-ratio: 9/16; object-fit: cover; }
+  .gallery-item.wide img { aspect-ratio: 16/9; object-fit: cover; }
+  .gallery-item.square img { aspect-ratio: 1; object-fit: cover; }
+
+  /* Number badge */
+  .item-number {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    z-index: 2;
+    transition: color 0.3s;
+  }
+
+  .gallery-item:hover .item-number { color: var(--gold); }
+
+  /* Empty state */
+  .empty-state {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 120px 24px;
+  }
+
+  .empty-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 160px;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--border);
+    line-height: 1;
+    margin-bottom: 24px;
+  }
+
+  .empty-text {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ─── LIGHTBOX ─── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.97);
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+
+  .lightbox.open { display: flex; }
+
+  .lightbox img {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.8);
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 32px; right: 32px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 44px; height: 44px;
+    cursor: none;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .lightbox-close:hover { border-color: var(--gold); color: var(--gold); }
+
+  .lightbox-info {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .lightbox-name {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .lightbox-dl {
+    background: var(--gold);
+    color: #000;
+    padding: 8px 20px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s;
+  }
+
+  .lightbox-dl:hover { background: var(--gold2); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .footer-logo span { color: var(--gold); font-style: italic; }
+
+  .footer-text {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .footer-link {
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .footer-link:hover { border-color: var(--gold); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s, transform 0.7s;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── LOADING ─── */
+  .loader {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.6s, visibility 0.6s;
+  }
+
+  .loader.hidden { opacity: 0; visibility: hidden; }
+
+  .loader-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    color: var(--gold);
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    animation: loaderPulse 1.5s infinite;
+  }
+
+  @keyframes loaderPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    nav, .hero-content, .hero-bottom, .gallery-section, .divider, footer {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+    .gallery-grid { columns: 2; }
+    .nav-links { display: none; }
+    .hero-title { font-size: clamp(56px, 16vw, 120px); }
+    .gallery-header { flex-direction: column; align-items: flex-start; gap: 24px; }
+    footer { flex-direction: column; gap: 24px; text-align: center; }
+  }
+
+  @media (max-width: 480px) {
+    .gallery-grid { columns: 1; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Loader -->
+<div class="loader" id="loader">
+  <span class="loader-text">Carregando</span>
+</div>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+
+  <nav>
+    <div class="nav-logo">Carlos<span>Walls</span></div>
+    <ul class="nav-links">
+      <li><a href="#galeria">Galeria</a></li>
+      <li><a href="https://github.com/CarlosRgoku/Wallpapers" target="_blank">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-line"></div>
+      <span>Acervo Digital</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="small">Coleção</span>
+      WALL<em>PAPERS</em>
+    </h1>
+    <p class="hero-desc">
+      Uma coleção cuidadosamente selecionada de wallpapers. Anime, paisagens, cidades e muito mais.
+    </p>
+  </div>
+
+  <div class="hero-bottom">
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span>Ver galeria</span>
+    </div>
+    <div class="hero-counter" id="heroCounter">00</div>
+  </div>
+</section>
+
+<!-- ─── DIVIDER ─── -->
+<div class="divider reveal" id="galeria">
+  <div class="divider-line"></div>
+  <div class="divider-diamond"></div>
+  <span class="divider-text">Galeria Completa</span>
+  <div class="divider-diamond"></div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- ─── GALLERY ─── -->
+<section class="gallery-section">
+  <div class="gallery-header reveal">
+    <h2 class="gallery-title">Todos os<br><span>Wallpapers</span></h2>
+    <div class="gallery-filter">
+      <button class="filter-btn active" onclick="filterGallery('all', this)">Todos</button>
+      <button class="filter-btn" onclick="filterGallery('anime', this)">Anime</button>
+      <button class="filter-btn" onclick="filterGallery('paisagem', this)">Paisagem</button>
+    </div>
+  </div>
+  <div class="gallery-grid reveal" id="galleryGrid">
+    <!-- Populated by JS -->
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer class="reveal">
+  <div class="footer-logo">Carlos<span>Walls</span></div>
+  <span class="footer-text">© 2026 — Todos os direitos reservados</span>
+  <a href="https://github.com/CarlosRgoku/Wallpapers" target="_blank" class="footer-link">GitHub →</a>
+</footer>
+
+<!-- ─── LIGHTBOX ─── -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="">
+  <div class="lightbox-info">
+    <span class="lightbox-name" id="lightboxName"></span>
+    <a class="lightbox-dl" id="lightboxDl" href="" download>Baixar</a>
+  </div>
+</div>
+
+<script>
+  // ─── Cursor ───
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 4 + 'px';
+    cursor.style.top = my - 4 + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx - 18 + 'px';
+    ring.style.top = ry - 18 + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  // ─── GitHub API ───
+  const GITHUB_USER = 'CarlosRgoku';
+  const GITHUB_REPO = 'Wallpapers';
+  const BRANCH = 'main';
+  const RAW = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${BRANCH}`;
+  const API = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/wallpapers`;
+
+  const SIZES = ['wide', 'tall', 'square', 'wide', 'wide', 'tall'];
+
+  async function loadWallpapers() {
+    const grid = document.getElementById('galleryGrid');
+    try {
+      const res = await fetch(API);
+      const files = await res.json();
+      const images = Array.isArray(files)
+        ? files.filter(f => /\.(jpg|jpeg|png|webp|gif)$/i.test(f.name))
+        : [];
+
+      document.getElementById('heroCounter').textContent =
+        String(images.length).padStart(2, '0');
+
+      if (!images.length) {
+        grid.innerHTML = `<div class="empty-state">
+          <div class="empty-number">0</div>
+          <p class="empty-text">Nenhum wallpaper ainda</p>
+        </div>`;
+        return;
+      }
+
+      window._allImages = images;
+      renderImages(images);
+
+    } catch (e) {
+      grid.innerHTML = `<div class="empty-state">
+        <div class="empty-number">!</div>
+        <p class="empty-text">Erro ao carregar — verifique o repositório</p>
+      </div>`;
+    }
+
+    document.getElementById('loader').classList.add('hidden');
+  }
+
+  function renderImages(images) {
+    const grid = document.getElementById('galleryGrid');
+    grid.innerHTML = images.map((f, i) => {
+      const src = `${RAW}/wallpapers/${encodeURIComponent(f.name)}`;
+      const name = f.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+      const size = SIZES[i % SIZES.length];
+      return `
+        <div class="gallery-item ${size}" data-name="${name.toLowerCase()}" onclick="openLightbox('${src}','${name}')">
+          <span class="item-number">${String(i+1).padStart(2,'0')}</span>
+          <img src="${src}" alt="${name}" loading="lazy">
+          <div class="item-info">
+            <div class="item-name">${name}</div>
+            <div class="item-actions">
+              <a class="item-btn" href="${src}" download="${f.name}" onclick="event.stopPropagation()">Baixar</a>
+              <button class="item-btn" onclick="event.stopPropagation();openLightbox('${src}','${name}')">Ver</button>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function filterGallery(tag, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const all = window._allImages || [];
+    const filtered = tag === 'all' ? all : all.filter(f => f.name.toLowerCase().includes(tag));
+    renderImages(filtered.length ? filtered : all);
+  }
+
+  // ─── Lightbox ───
+  function openLightbox(src, name) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightboxName').textContent = name;
+    document.getElementById('lightboxDl').href = src;
+    document.getElementById('lightboxDl').download = name;
+    document.getElementById('lightbox').classList.add('open');
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  // ─── Scroll reveal ───
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ─── Init ───
+  loadWallpapers();
+  setTimeout(() => document.getElementById('loader').classList.add('hidden'), 3000);
+</script>
+</body>
+</html>
