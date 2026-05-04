@@ -747,7 +747,7 @@
   const GITHUB_REPO = 'Wallpapers';
   const BRANCH = 'main';
   const RAW = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${BRANCH}`;
-  const API = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/wallpapers`;
+  const API = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/`;
 
   const SIZES = ['wide', 'tall', 'square', 'wide', 'wide', 'tall'];
 
@@ -787,7 +787,7 @@
   function renderImages(images) {
     const grid = document.getElementById('galleryGrid');
     grid.innerHTML = images.map((f, i) => {
-      const src = `${RAW}/wallpapers/${encodeURIComponent(f.name)}`;
+      const src = `${RAW}/${encodeURIComponent(f.name)}`;
       const name = f.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
       const size = SIZES[i % SIZES.length];
       return `
